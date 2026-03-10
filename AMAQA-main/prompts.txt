@@ -1,0 +1,91 @@
+''' --------------------------------- TOPICS EXTRACTION PROMPT ---------------------------------'''
+"""Task: Label Telegram message
+
+    Context: You will be provided with a message from Telegram. 
+    Your task is to assign the most appropriate label to message, choosing from a fixed list of categories.
+
+    Input:
+    1. Fixed list of categories:
+    {CATEGORIES}
+    2. The message
+    {MESSAGE}
+
+
+    Instructions:
+    1. Familiarize yourself with the fixed list of categories provided
+    2. Read the message
+    3. Choose the most appropriate categories for the message
+    4. Output the result in the specified JSON format
+
+    Output Format:
+    Provide your response in the following JSON structure:
+    {{"categories": ["category1", "category2", "category3"]}}
+
+    Notes:
+    - Choose between 0 and n categories from the fixed list
+    - Do not create new categories or combine existing ones
+    - Do not include any explanation or additional information
+    - Each categories must exactly match one of those in input1
+
+    Example Output:
+    {{"categories": ["personages/Donald Trump", "wars/Israel", "organizations/NATO"]}}
+
+    Or, if no categories are relevant:
+    {{"categories": []}}"""
+
+
+''' --------------------------------- QUESTION-ANSWER-MESSAGE TRIPLES CREATION PROMPT ---------------------------------'''
+
+"""
+You have a series of social media messages that you want to use to generate a relevant question and a simple, verifiable answer.
+Each message is separated by "*************** Message {{message_id}} ***************". 
+Please analyze these messages and create:
+- A clear and relevant question based on the information in only one of these messages, avoiding any reference to the messages or the message number.
+- A concise and simple answer (preferably a few words) that can be easily verified, avoiding unnecessary complexity.
+- Ensure that the answer to the question is unique within all the messages. 
+There should be no other message that could provide a similar or alternative answer to the question. 
+The answer must come only from the specific message indicated.
+
+As an example: "if in the text OF ONE MESSAGE is mentioned that mountains are red ( if red is the only possible color mentioned for mountains in ALL messages), then a good pair question/answer will be: " Q: what is the color of mountains? A: red;"
+
+The output should be only the JSON format, containing at least 3 examples of questions and answers and the relevant message number in which the answer is present.
+
+{text}
+
+Below is an example of the JSON output:
+[
+    {{
+        "question": "What derogatory term is used for Muslims?",
+        "answer": "Pathetic",
+        "message": 4
+    }},
+    {{
+        "question": "What accusation is made against Muslims?",
+        "answer": "Servants of Belial.",
+        "message": 7
+    }},
+    {{
+        "question": "Who is accused of being a puppet for the deep state?",
+        "answer": "Fauci",
+        "message": 12
+    }}
+]
+"""
+
+'''--------------------------------- TRIPLE VERIFICATION PROMPT ---------------------------------'''
+
+Given a list of messages and a JSON containing 3 question/answer pairs with the message from which the answer is derived, 
+select the JSON object that contains the shortest and simplest answer, 
+ensuring that it is correct and is the only possible answer based on the information contained in all the other messages.
+
+{text}
+
+Returns only the selected json by adding a “text” field with the full text of the message from which the response was extracted
+Below is an example of the JSON output:
+    {{
+        "question": "What is Trump's foreign policy with Ukraine described as?",
+        "answer": "Garbage",
+        "message": 22,
+        "text": "Trump’s foreign policy with Ukraine is garbage"
+    }}
+"""
