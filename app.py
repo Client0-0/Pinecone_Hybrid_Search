@@ -88,7 +88,8 @@ if st.button("Search", type="primary") and query_text:
             fetch_response = index.query(
                 vector=query_vector,
                 top_k=top_k_retrieve,
-                include_metadata=True
+                include_metadata=True,
+                filter = {"city": "New York"}
             )
             matches = fetch_response.get("matches", [])
         except Exception as e:
